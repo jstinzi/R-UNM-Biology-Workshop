@@ -21,6 +21,8 @@ Once R is installed, go to: https://rstudio.com/products/rstudio/download/ and d
 
 {ggplotgui} - provides a basic graphical user interface (GUI) for ggplot2
 
+{lubridate} - useful tools for handling dates and times in R
+
 {minpack.lm} - useful set of tools for non-linear curve fitting
 
 {nlme} - useful set of tools for mixed effects statistical modeling
@@ -29,7 +31,8 @@ Once R is installed, go to: https://rstudio.com/products/rstudio/download/ and d
 
 Run the following command to install these packages:
 
-    install.packages(c("dplyr", "ggplot2", "ggplotgui", "minpack.lm", "nlme", "tidyr"))
+    install.packages(c("dplyr", "ggplot2", "ggplotgui", "lubridate", "minpack.lm", 
+    "nlme", "tidyr"))
 
 ## Resources
 Burns. The R Inferno. https://www.burns-stat.com/pages/Tutor/R_inferno.pdf
