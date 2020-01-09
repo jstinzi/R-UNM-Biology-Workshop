@@ -1,0 +1,22 @@
+---
+title: 'Using R: Functions & Conditionals'
+author: "Joseph R. Stinziano"
+date: "09/01/2020"
+output: html_document
+---
+
+#Using for loops
+```{r}
+
+```
+
+
+#Using conditionals
+```{r}
+
+```
+
+#Writing functions
+```{r}
+
+```

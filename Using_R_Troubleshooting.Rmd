@@ -1,0 +1,21 @@
+---
+title: 'Using R: Troubleshooting'
+author: "Joseph R. Stinziano"
+date: "09/01/2020"
+output: html_document
+---
+
+#Common mistakes
+```{r}
+
+```
+
+#R error interpretation
+```{r}
+
+```
+
+#Troubleshooting your own function
+```{r}
+
+```
