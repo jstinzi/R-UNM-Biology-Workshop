@@ -1,0 +1,214 @@
+---
+title: 'Using R: An Introduction to Data Wrangling'
+author: "Joseph R. Stinziano"
+date: "08/01/2020"
+output: html_document
+---
+
+#Types of objects in R
+R is an object-oriented programming language. There are 
+different types of objects, including dataframes, lists,
+vectors, matrices, arrays, etc. A lot of analyses in
+biology can be conducted working mostly with dataframes,
+lists and vectors. It is important to keep track of object
+types in R, since how you work with each type of object
+varies.
+
+There are different classes of variables as well, including
+doubles (integers and numeric), characters, factors, POSIX 
+(useful for dates and times), etc.
+```{r}
+#Create a vector from 1 to 10
+#Note that the colon : creates a sequence
+a <- 1:10
+
+#Check its class
+class(a)
+
+#Create a string
+#Note the concanetate function c(), and the repeat function
+#rep()
+b <- c(rep("a", 5), rep("b", 5))
+
+#Check its class
+class(b)
+
+#Next we can take vectors a and b to turn them into a
+#dataframe. Note the as.data.frame() function and the
+#cbind() function - cbind = column bind, to bind rows
+#use rbind() for "row bind"
+c <- as.data.frame(cbind(a, b), stringsAsFactors = FALSE)
+
+#Check its class
+class(c)
+
+#Create summary
+summary(c)
+#Notice that "a" is a character, but should be a number
+#Let's fix that
+c$a <- as.numeric(c$a)
+#Note that the "$" extracts a variable from a dataframe
+#We can also use:
+c[, "a"]
+
+#Create a boxplot
+boxplot(a ~ b, data = c)
+#Notice the "~" - this is used for specifying formulas
+#This will make more sense when we get to the stats
+
+#What happens if we do not use as.data.frame?
+c <- cbind(a, b)
+class(c)
+summary(c)
+#Note that if we try to extract a variable from a matrix
+#like we do for a dataframe, it doesn't work!
+c$a
+
+#Instead we extract the column like this:
+c[, "a"]
+
+#To extract a row, we can use:
+c[1, ]
+#Notice how one method of extracting information is more
+#general than others? In some cases you may want to use
+#a specific method (like "$") to force an error if the
+#object types are incorrect!
+
+#What about factors?
+c <- as.data.frame(cbind(a, b), stringsAsFactors = FALSE)
+c$b <- as.factor(c$b)
+c$b
+summary(c$b)
+levels(c$b)
+#Note that factors are stored as dummy numbers referring
+#to a character level. To convert from a factor to a
+#character, use:
+c$b <- levels(c$b)[c$b]
+```
+
+#Importing data into R
+Unless you are doing specialized analyses, most of your data
+will be in a delimited text format, including tab-delimited,
+and comma-separated values (csv). In some case you will need
+to read in an Excel file - luckily there are functions for
+that as well.
+
+When reading in files, it is best to set stringsasFactors as
+FALSE to avoid the issue of have to convert data from a factor
+to a character.
+
+R looks for files based on the working directory (i.e. file
+folder). Before importing data, it is important to confirm
+that the working directory is correct.
+```{r}
+#Get the working directory
+getwd()
+
+#This line is for an example of how to set working directory
+WD <- getwd()
+
+#You can set the working directory with:
+setwd(WD)
+
+#It is easiest to read data into R when it is in the .csv format
+data <- read.csv("light_responses.csv", stringsAsFactors = FALSE)
+
+#If your data are in a tab-limited format, use:
+data <- read.delim("filename.extension", sep = "\t", 
+                   stringsAsFactors = FALSE)
+
+
+```
+
+#Rearranging data in R
+```{r}
+
+```
+
+#Data visualization in R
+There are two major approaches to plotting in R, the base plot
+function and ggplot. ggplot is by far easier to perfect than
+base plot.
+```{r}
+#Install ggplot2
+install.packages("ggplot2")
+
+#Load the package
+library(ggplot2)
+
+#Let's read in some data
+data <- read.csv("light_responses.csv", stringsAsFactors = FALSE)
+
+#Let's look at the structure of the data file
+str(data)
+
+#Let's plot the data based on rate
+ggplot(data = data, aes(x = PARi, y = A, colour = Rate)) +
+  geom_point()
+
+#That's a little too much data for the plot, so let's try something
+#else
+data <- split(data, data$Poplar.ID)
+
+ggplot(data = data[[1]], aes(x = PARi, y = A, colour = Rate)) +
+  geom_point()
+
+#Now let's clean this up a bit to make it look nice
+figure_1 <- ggplot(data = data[[1]], aes(x = PARi, y = A, colour = Rate)) +
+  geom_point() +
+  labs(x = expression("Irradiance ("*mu*mol~m^{-2}~s^{-1}*")"),
+       y = expression("A ("*mu*mol~m^{-2}~s^{-1}*")")) +
+  theme_bw() +
+  theme(text = element_text(size = 14),
+        legend.position = c(0.8, 0.25),
+        legend.background = element_blank())
+
+figure_1
+
+#Now how do we get it out of R?
+#Highlight and run all of these lines
+#File will appear in working directory
+jpeg("Figure 1.jpeg", height = 4, width = 4, res = 600, units = "in")
+figure_1
+dev.off()
+
+#Look to see if it appeared
+list.files()
+
+#What if you're feeling lazy and want a quick check on your data?
+#Use the plot() function:
+plot(A ~ gsw, data[[1]])
+#This is nice when you need a fast visual check during your analysis
+
+#Okay, but what if I want to use ggplot but am not too confident?
+#Try ggplotgui!
+install.packages("ggplotgui")
+library(ggplotgui)
+
+#ggplotgui gives you an interface with:
+ggplot_shiny(data[[1]])
+```
+
+#Basic statistics in R
+This section will cover linear regression, t tests, basic ANOVA,
+and assumption checking
+```{r}
+#Let's read in some data
+data <- read.csv("light_responses.csv", stringsAsFactors = FALSE)
+
+#We are going to see the impact of gsw on Ci
+plot(gsw ~ Ci, data[data$Poplar.ID == "1A", ])
+#Looks like there is some grouping going on, probably due to
+#the rate at which the light response was obtained
+model_1 <- aov(data = data,
+               gsw ~ Ci * Rate)
+#Check assumptions:
+plot(model_1)
+#Data are not normal, probably should not use regular ANOVA
+
+#We can take a look at the output for the example
+summary(model_1)
+
+#What about if we take a regression approach instead?
+```
+
