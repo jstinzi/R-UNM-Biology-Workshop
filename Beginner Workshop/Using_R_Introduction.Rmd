@@ -120,7 +120,12 @@ data <- read.delim("filename.extension", sep = "\t",
 
 ```
 
-#Rearranging data in R
+#Rearranging data in R, subsetting, creating variables
+R can be used to calculate new variables, subset from a given data
+set, and for rearranging the format. In general, R prefers data to
+be in the "long" format - this means fewer columns that specify a
+variable (e.g. treatment, individual). The wide format would have
+a separate column for each individual for each response variable.
 ```{r}
 
 ```
@@ -210,5 +215,11 @@ plot(model_1)
 summary(model_1)
 
 #What about if we take a regression approach instead?
+model_2 <- lm(data = data, gsw ~ Ci * Rate)
+plot(model_2)
+summary(model_2)
+
+#What differences are there between the summaries?
+#Why might you choose one approach over the other?
 ```
 

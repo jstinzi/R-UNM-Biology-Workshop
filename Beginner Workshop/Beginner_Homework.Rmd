@@ -1,0 +1,82 @@
+---
+title: "Beginner Homework"
+author: "Joseph R. Stinziano"
+date: "10/02/2020"
+output: html_document
+---
+
+#Homework
+This homework may require you to consult different resources in R.
+Some resources are built into R, for example by using ?function,
+you will get the R helpfile for that function. However, if you do
+not know which function to use, you may have to use a search
+engine to find an answer.
+
+1. Read in the light response data setting stringsAsFactors 
+to TRUE and FALSE. What variables are affected by this argument?
+What potential (if any) issues could arise from this? When setting
+stringsAsFactors to TRUE, how do you solve the resulting issues?
+Fix the issue using code.
+```{r}
+
+```
+
+2. Create a new dataframe containing only Poplar ID 1A at a rate
+of 50 using two different methods of subsetting. Are there any
+differences between the two methods?
+```{r}
+
+```
+
+3. Using the dataframe generated in 2, create a new variable,
+A / gsw, and plot it against PARi. The units for A / gsw are
+micromoles of CO2 per mol of H2O per meter squared per second,
+while for PARi they are micromoles of photons per meter squared
+per second. Add labels to the graph using the appropriate
+symbols and subscripting.
+```{r}
+
+```
+
+4. Using the dataframe from 1, rearrange the dataframe from a
+long format to a wide format. Under what circumstances could a
+wide format be valuable? What are the difficulties in using the
+wide format in R?
+```{r}
+
+```
+
+5. Using datafrom 2, log-transform variable A, then run a linear
+regression to test for interactions between PARi and gsw. What
+issue is there with log-transforming the variable? Why? Are the
+assumptions of linear regression met? Why or why not? Assuming the
+assumptions are met, what are the conclusions of the statistical
+test? Which information would you report in the results section of
+a manuscript?
+```{r}
+
+```
+
+6. Export a publication-quality jpeg of a graph of A as a function
+of PARi for Poplar.ID 2A at a Rate of 100 and another graph at a
+Rate of 500. The output must be a single file with two panels, with
+panels labelled "a)" and "b)". Each graph must have a white background
+with a font size of 14 for all text elements. The units of A and PARi
+must be micromoles per meter squared per second, using appropriate
+symbols. Make the points red for panel a) and blue for panel b) with
+a black outline and circular shape. The output should have a height
+to width ratio of 2 : 1 with a resolution of 600 dpi.
+```{r}
+
+```
+
+7. Export the dataframe from 2 into a .csv file.
+```{r}
+
+```
+
+8. What packages did you need to complete the homework? Which
+functions did you use from each package?
+```{r}
+
+```
