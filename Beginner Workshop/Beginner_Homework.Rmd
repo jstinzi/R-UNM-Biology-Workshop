@@ -75,7 +75,13 @@ to width ratio of 2 : 1 with a resolution of 600 dpi.
 
 ```
 
-8. What packages did you need to complete the homework? Which
+8. Below are broken lines of code. Find the errors and fix them.
+What was the mistake in each line of code?
+```{r}
+
+```
+
+9. What packages did you need to complete the homework? Which
 functions did you use from each package?
 ```{r}
 

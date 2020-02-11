@@ -127,7 +127,30 @@ be in the "long" format - this means fewer columns that specify a
 variable (e.g. treatment, individual). The wide format would have
 a separate column for each individual for each response variable.
 ```{r}
+library(tidyr)
+#We can use the pivot_wider function from tidyr to make the
+#dataframe wider. What is unexpected about the output data
+#frame?
+data_wide <- pivot_wider(data = data,
+                         names_from = Poplar.ID,
+                         values_from = c(A))
 
+#Subsetting data can be done using brackets, [], or the
+#subset() function. Beware that the subset function does not
+#always behave as expected (see help file) and therefore
+#should not be considered a reproducible way to subset data.
+#Notice the difference between the two subsets with []. 
+#What is changing?
+data_2 <- data[data$A > 0, ]
+data_3 <- data[, 1:3]
+data_4 <- subset(data, data$A > 0)
+
+#Next we calculate an estimate of gross photosynthesis from
+#the data. At PARi = 0, A = respiration. Therefore
+#A - respiration = gross photosynthesis.
+data_5 <- data[data$Poplar.ID == "1A" &
+                 data$Rate == 0,]
+data_5$Agross <- data_5$A - min(data_5$A)
 ```
 
 #Data visualization in R
