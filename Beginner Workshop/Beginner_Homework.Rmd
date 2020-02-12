@@ -1,7 +1,7 @@
 ---
 title: "Beginner Homework"
 author: "Joseph R. Stinziano"
-date: "10/02/2020"
+date: "12/02/2020"
 output: html_document
 ---
 
@@ -52,7 +52,8 @@ issue is there with log-transforming the variable? Why? Are the
 assumptions of linear regression met? Why or why not? Assuming the
 assumptions are met, what are the conclusions of the statistical
 test? Which information would you report in the results section of
-a manuscript?
+a manuscript? Do the conclusions change if you run a robust test
+instead?
 ```{r}
 
 ```
@@ -70,7 +71,8 @@ to width ratio of 2 : 1 with a resolution of 600 dpi.
 
 ```
 
-7. Export the dataframe from 2 into a .csv file.
+7. Export the dataframe from 2 into a .csv file. Can you find the
+file? Is it where you expected? If not, then why?
 ```{r}
 
 ```
@@ -78,7 +80,26 @@ to width ratio of 2 : 1 with a resolution of 600 dpi.
 8. Below are broken lines of code. Find the errors and fix them.
 What was the mistake in each line of code?
 ```{r}
+#Create a vector
+abc <- c(10, 23, 4, 15. 515, 20, 15, 613)
 
+#Select the 8th element of a vector
+def <- 1:8
+def(8)
+
+#Create a dataframe from the two vectors above
+#and run a linear regression between the two
+g <- cbind(abc, def)
+model_g <- lm[abc ~ def, dat = g]
+
+#Read in the data, make sure that there are no
+#variables mis-specified as factors
+data <- read.csv("light_responses")
+
+#Create a plot with a smoothing line and points
+ggplot(g, aes(x = abc, y = def)) +
+  geom_point() 
+  geom_smooth()
 ```
 
 9. What packages did you need to complete the homework? Which

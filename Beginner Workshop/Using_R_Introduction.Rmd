@@ -1,7 +1,7 @@
 ---
 title: 'Using R: An Introduction to Data Wrangling'
 author: "Joseph R. Stinziano"
-date: "08/01/2020"
+date: "12/02/2020"
 output: html_document
 ---
 
@@ -224,18 +224,45 @@ and assumption checking
 #Let's read in some data
 data <- read.csv("light_responses.csv", stringsAsFactors = FALSE)
 
+#We will set rate as a factor for illustrating the ANOVA
+data$Rate <- as.factor(data$Rate)
+
+#To run ANOVAs, we will use the {car} package as it has a good
+#set of tools for running ANOVAs
+library(car)
+
 #We are going to see the impact of gsw on Ci
 plot(gsw ~ Ci, data[data$Poplar.ID == "1A", ])
 #Looks like there is some grouping going on, probably due to
 #the rate at which the light response was obtained
-model_1 <- aov(data = data,
-               gsw ~ Ci * Rate)
+
+#WATCH OUT - summary(aov()) provides Type I sequential sum
+#of squares, not Type III marginal sum of squares. We want
+#the Type III SS, so we use the following function to get
+#the relevant ANOVA summary:
+model_1 <- Anova(aov(data = data,
+               gsw ~ Ci * Rate),
+               type = "III")
+
+#Get the output:
+model_1
+
 #Check assumptions:
-plot(model_1)
+plot(aov(data = data,
+               gsw ~ Ci * Rate))
 #Data are not normal, probably should not use regular ANOVA
 
+#We can also just try using the base ANOVA function
+model_1 <- aov(data = data,
+               gsw ~ Ci * Rate)
 #We can take a look at the output for the example
 summary(model_1)
+#WATCH OUT - summary(aov()) provides Type I sequential sum
+#of squares, not Type III marginal sum of squares. We want
+#the Type III SS, so we use the following function to get
+#the relevant ANOVA summary:
+drop1(model_1, ~., test = "F")
+#What is different between the summary() and drop1() options?
 
 #What about if we take a regression approach instead?
 model_2 <- lm(data = data, gsw ~ Ci * Rate)
@@ -244,5 +271,17 @@ summary(model_2)
 
 #What differences are there between the summaries?
 #Why might you choose one approach over the other?
+
+#Since the data broke assumptions of our statistical models,
+#let's use a robust approach. First we will convert Rate
+#back to a numeric because there are issues in interactions
+#between factors and doubles in the robust package
+data$Rate <- as.numeric(levels(data$Rate)[data$Rate])
+library(robust)
+model_rob <- lmRob(gsw ~ Ci * Rate,
+                   data = data)
+summary(model_rob)
+#What are the differences between the robust and standard
+#tests?
 ```
 
