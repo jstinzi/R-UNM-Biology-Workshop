@@ -37,53 +37,53 @@ class(b)
 #dataframe. Note the as.data.frame() function and the
 #cbind() function - cbind = column bind, to bind rows
 #use rbind() for "row bind"
-c <- as.data.frame(cbind(a, b), stringsAsFactors = FALSE)
+d <- as.data.frame(cbind(a, b), stringsAsFactors = FALSE)
 
 #Check its class
-class(c)
+class(d)
 
 #Create summary
-summary(c)
+summary(d)
 #Notice that "a" is a character, but should be a number
 #Let's fix that
-c$a <- as.numeric(c$a)
+d$a <- as.numeric(d$a)
 #Note that the "$" extracts a variable from a dataframe
 #We can also use:
-c[, "a"]
+d[, "a"]
 
 #Create a boxplot
-boxplot(a ~ b, data = c)
+boxplot(a ~ b, data = d)
 #Notice the "~" - this is used for specifying formulas
 #This will make more sense when we get to the stats
 
 #What happens if we do not use as.data.frame?
-c <- cbind(a, b)
-class(c)
-summary(c)
+d <- cbind(a, b)
+class(d)
+summary(d)
 #Note that if we try to extract a variable from a matrix
 #like we do for a dataframe, it doesn't work!
-c$a
+d$a
 
 #Instead we extract the column like this:
-c[, "a"]
+d[, "a"]
 
 #To extract a row, we can use:
-c[1, ]
+d[1, ]
 #Notice how one method of extracting information is more
 #general than others? In some cases you may want to use
 #a specific method (like "$") to force an error if the
 #object types are incorrect!
 
 #What about factors?
-c <- as.data.frame(cbind(a, b), stringsAsFactors = FALSE)
-c$b <- as.factor(c$b)
-c$b
-summary(c$b)
-levels(c$b)
+d <- as.data.frame(cbind(a, b), stringsAsFactors = FALSE)
+d$b <- as.factor(d$b)
+d$b
+summary(d$b)
+levels(d$b)
 #Note that factors are stored as dummy numbers referring
 #to a character level. To convert from a factor to a
 #character, use:
-c$b <- levels(c$b)[c$b]
+d$b <- levels(d$b)[d$b]
 ```
 
 #Importing data into R
@@ -114,9 +114,8 @@ setwd(WD)
 data <- read.csv("light_responses.csv", stringsAsFactors = FALSE)
 
 #If your data are in a tab-limited format, use:
-data <- read.delim("filename.extension", sep = "\t", 
+data <- read.delim("poplar_light_tab_delim", sep = "\t", 
                    stringsAsFactors = FALSE)
-
 
 ```
 
@@ -203,6 +202,37 @@ dev.off()
 #Look to see if it appeared
 list.files()
 
+#What about if we want to add a curve to the plot?
+#Let's first pare the data just to the Rate = 0
+data_test <- data[[1]][data[[1]]$Rate == 0, ]
+
+#Next we use geom_smooth() - note that the default
+#is to use loess smoothing, can change it to lm,
+#can also specify the formula, slopes, intercepts, etc.
+figure_2 <- ggplot(data = data_test, aes(x = PARi, y = A)) +
+  geom_point() +
+  geom_smooth() +
+  labs(x = expression("Irradiance ("*mu*mol~m^{-2}~s^{-1}*")"),
+       y = expression("A ("*mu*mol~m^{-2}~s^{-1}*")")) +
+  theme_bw() +
+  theme(text = element_text(size = 14))
+
+figure_2
+
+#What if we want to add a line with a slope = 0.06 (approximate
+#initial slope of this light response) and intercept = -2?
+#We can use geom_abline() for straight lines.
+figure_3 <- ggplot(data = data_test, aes(x = PARi, y = A)) +
+  geom_point() +
+  geom_smooth() +
+  geom_abline(slope = 0.06, intercept = -2) +
+  labs(x = expression("Irradiance ("*mu*mol~m^{-2}~s^{-1}*")"),
+       y = expression("A ("*mu*mol~m^{-2}~s^{-1}*")")) +
+  theme_bw() +
+  theme(text = element_text(size = 14))
+
+figure_3
+
 #What if you're feeling lazy and want a quick check on your data?
 #Use the plot() function:
 plot(A ~ gsw, data[[1]])
@@ -215,6 +245,34 @@ library(ggplotgui)
 
 #ggplotgui gives you an interface with:
 ggplot_shiny(data[[1]])
+```
+
+
+#Summarizing data in R
+R can be used to readily summarize data - this can save
+a substantial amount of time producing tables of summary
+statistics for manuscripts. A very useful package for this
+is the {dplyr} package.
+
+{dplyr} provides the pipeline, %>%, which can simplify
+code, and provides functions that aid in data summarization.
+```{r}
+data <- read.csv("light_responses.csv", stringsAsFactors = FALSE)
+
+#group_by selects the variables with which to group
+#In the summarize argument, you must use the "=".
+data_summary <- data %>% 
+  group_by(Poplar.ID, Rate) %>%
+  summarize(A_mean = mean(A),
+            A_se = sd(A) / sqrt(n()),
+            gsw_mean = mean(gsw),
+            gsw_se = sd(gsw) / sqrt(n()),
+            slope = coef(lm(A ~ gsw))[[2]])
+#Notice how you can run pretty much any function
+#through summarize. Now let's print this out as a
+#csv to make it easy to add into a manuscript
+write.csv(data_summary, "data_summary.csv")
+
 ```
 
 #Basic statistics in R
