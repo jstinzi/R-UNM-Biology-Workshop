@@ -1,0 +1,26 @@
+---
+title: "Intermediate_Homework"
+author: "Joseph R. Stinziano"
+date: "13/02/2020"
+output: html_document
+---
+
+#1. Create a function that adds a new column based on...
+```{r}
+
+```
+
+#2. Extract data from THISDATASET that EXCLUDES THIS.
+Remove THIS from the dataset.
+```{r}
+
+```
+
+#3. Create a function that runs a linear model of THISSTRUCTURE
+under THESECONDITIONS, but provides NA under THESECONDITIONS.
+Output should be a dataframe.
+```{r}
+
+```
+
+#4. 

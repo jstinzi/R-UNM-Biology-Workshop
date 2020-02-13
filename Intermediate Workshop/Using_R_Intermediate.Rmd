@@ -6,10 +6,76 @@ output: html_document
 ---
 
 #Using for loops
+for loops are powerful for iterating analyses. We will start by
+generating a random dataset, and from there run some iterated 
+analyses. Note that random data generation as below is useful
+for testing function behaviour.
+
 ```{r}
+#First run set.seed to reproduce random examples
+#Can be any number, but by assigning a single number,
+#you ensure the random functions give the same output
+#everytime you run them. Of course, this is only for 
+#reproducibility.
+set.seed(10)
+#runif randomly samples a uniform distribution
+Height <- runif(100, min = 0, max = 10)
+StemDiameter <- runif(100, min = 0, max = 1)
+Species <- c(rep("Pine", 25),
+             rep("Avocado", 25),
+             rep("Kale", 25),
+             rep("Maple", 25)
+             )
+data <- data.frame(cbind(Height,
+                            StemDiameter,
+                            Species),
+                      stringsAsFactors = FALSE)
+data$Height <- as.numeric(data$Height)
+data$StemDiameter <- as.numeric(data$StemDiameter)
+
+#Suppose we want to run a linear model of Height ~ StemDiameter
+#for each species. We need a way to separate the data
+data <- split(data, data$Species)
+
+#and an output...
+output <- list()
+
+#Use a for loop to run through index i, assign output
+#to equivalent index
+for(i in 1:length(data)){
+  output[[i]] <- lm(Height ~ StemDiameter, data[[i]])
+}
+
+#Now let's see the results:
+summary(output[[1]])
+
+#Now let's say we need to add a new variable, Block,
+#of which there is N = 5 for 5 different blocks.
+#In this case, we can use a nested for loop
+#We also need to pre-allocate a variable
+for(i in 1:length(data)){
+  data[[i]]$Block <- NA
+  for(j in 1:(nrow(data[[i]]) / 5)){
+    data[[i]]$Block[5 * j - 4] <- "A"
+    data[[i]]$Block[5 * j - 3] <- "B"
+    data[[i]]$Block[5 * j - 2] <- "C"
+    data[[i]]$Block[5 * j - 1] <- "D"
+    data[[i]]$Block[5 * j] <- "E"
+  } #end j loop
+} #end i loop
+
+#Check that your indexing worked
+data[[2]]$Block
+
+#Is there another way we could have done this?
 
 ```
 
+#When to use a list or a dataframe
+EXAMPLE of function done via dataframe+conditionals and via list
+```{r}
+
+```
 
 #Using conditionals
 ```{r}
@@ -17,6 +83,11 @@ output: html_document
 ```
 
 #Writing functions
+```{r}
+
+```
+
+#Troubleshooting functions
 ```{r}
 
 ```
