@@ -5,22 +5,40 @@ date: "13/02/2020"
 output: html_document
 ---
 
-#1. Create a function that adds a new column based on...
+#1. Create a  dataset with 30 observations each of 5 species, with three different randomly generated measured variables where the
+random sampling comes from a normal distribution. HINT: use ?runif
+and to find out the names for other distributions. How might you
+use a randomly-generated normal dataset in your analyses? How do
+you ensure that this example is reproducible?
 ```{r}
 
 ```
 
-#2. Extract data from THISDATASET that EXCLUDES THIS.
-Remove THIS from the dataset.
+#2. Extract data observations from the randomly generated dataset
+that are greater than the mean of variable 1, and less than two
+standard deviations from the mean of variable 2. Is there more
+than one way to do this?
 ```{r}
 
 ```
 
-#3. Create a function that runs a linear model of THISSTRUCTURE
-under THESECONDITIONS, but provides NA under THESECONDITIONS.
-Output should be a dataframe.
+#3. Create a function that runs a linear model of variable 1 ~
+variable 2 for each of the five species separately, and outputs
+the model coefficients to a properly labelled dataframe. Run the
+function for the dataframes from 1 and 2. How might you modify
+the function to extract the r-square value? What about standard
+errors of the parameter estimates? Add these capabilities to
+your function.
 ```{r}
 
 ```
 
-#4. 
+#4. Create a function that generates QAQC plots of the data,
+assigning each plot to a separate element of a list. Examples
+of QAQC include boxplots for each variable, ratios of variables
+(for example in most trees, we expect stem diameter to be less
+than height), etc. QAQC: quality assurance & quality control.
+What kind of QAQC plots might you use for your own data?
+```{r}
+
+```

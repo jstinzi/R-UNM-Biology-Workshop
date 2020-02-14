@@ -72,14 +72,133 @@ data[[2]]$Block
 ```
 
 #When to use a list or a dataframe
-EXAMPLE of function done via dataframe+conditionals and via list
+Lists can be useful for speeding up data analyses - it is
+relatively straightforward to convert dataframes to lists
+and back in R. Let's look at an example where we add a new
+variable, MAT (for mean annual temperature), with values
+of 5, 7, 9, 11, and 13 that correspond to Blocks A, B, C,
+D, and E, respectively.
 ```{r}
+#Use the split function to split the dataframe into a
+#list of dataframes based on block
+data <- split(data, data$Block)
 
+#Create a reference vector with the temperature to assign
+MAT <- c(5, 7, 9, 11, 13)
+
+#Use a for loop to automate assignment
+for(i in 1:length(data)){
+  data[[i]]$MAT <- MAT[i]
+}
+
+#Convert the list back to a dataframe
+data <- do.call("rbind", data)
+
+#Okay, now let's try this again, but we have to use the
+#dataframe instead of a list
+#First remove the variable MAT to avoid confusion
+data$MAT <- NULL
+
+#Need to add variable to dataframe
+data$MAT <- NA
+for(i in 1:nrow(data)){
+  if(data$Block[i] == "A"){
+    data$MAT[i] <- 5
+  }
+  if(data$Block[i] == "B"){
+    data$MAT[i] <- 7
+    }
+  if(data$Block[i] == "C"){
+    data$MAT[i] <- 9
+    }
+  if(data$Block[i] == "D"){
+    data$MAT[i] <- 11
+    }
+  if(data$Block[i] == "E"){
+    data$MAT[i] <- 13
+  }
+}
+#Note the differences in the amount of code needed!
 ```
 
 #Using conditionals
+Conditionals are eponymous with their function: they are a tool
+that subjects code to a set of conditions. These tools can be
+used for subsetting analyses, bifurcating functions, running
+analyses on subsets within a data object, and so on. The tools
+include if-then, if-then-else-this, while, >, <, ==, <=, >=,
+and !=, among others.
 ```{r}
+#Let's say that we want to know the correlation between height
+#and stem diameter only for blocks A and B
 
+data_AB <- data[data$Block == "A" |
+                  data$Block == "B", ]
+
+#The | sign means OR. What happens if we use &?
+
+data_AB_test <- data[data$Block == "A" &
+                  data$Block == "B", ]
+
+#There are no observations in the dataframe! Why?
+
+#What if we combine A and B with c()?
+
+data_AB_test <- data[data$Block == c("A", "B"), ]
+
+#Unexpected behaviour! Lesson: always double check behaviour
+#before building the next step. But there is a way to get this
+#to work:
+
+data_AB_test <- data[data$Block %in% c("A", "B"), ]
+
+#What if we want CDE, but want to use not AB?
+
+data_CDE <- data[data$Block != "A" &
+                   data$Block != "B", ]
+
+#Next let's subset the AB data for heights greater than or
+#equal to the median height
+
+data_AB_tophalf <- data_AB[data_AB$Height >= median(data_AB$Height), ]
+
+#What about if we want heights less than the median, and stem
+#diameters less than the mean?
+
+data_AB_small <- data_AB[data_AB$Height < 
+                           median(data_AB$Height) &
+                           data_AB$StemDiameter <
+                           mean(data_AB$StemDiameter), ]
+
+#Now suppose there was a computer error in data collection such
+#that the heights of C were halved, the stem diameter of D were
+#doubled, and E was recorded correctly.
+#We will use if statements to process this
+boxplot(Height ~ Block, data_CDE)
+for(i in 1:nrow(data_CDE)){
+  if(data_CDE$Block[i] == "C"){
+  data_CDE$Height[i] <- data_CDE$Height[i] * 2
+  }
+  if(data_CDE$Block[i] == "D"){
+    data_CDE$StemDiameter[i] <- data_CDE$StemDiameter[i] / 2
+  }
+}
+
+#Check the boxplot
+boxplot(Height ~ Block, data_CDE)
+
+#What about if pine had a further issue in that the Height
+#was square-rooted before the other calculation errors, while
+#being squared for the other species?
+for(i in 1:nrow(data_CDE)){
+  if(data_CDE$Species[i] == "Pine"){
+    data_CDE$Height[i] <- data_CDE$Height[i] ^ 2
+  } else {
+    data_CDE$Height[i] <- sqrt(data_CDE$Height[i])
+  }
+}
+#Check the boxplot
+boxplot(Height ~ Block, data_CDE)
 ```
 
 #Writing functions
@@ -123,9 +242,4 @@ myoutput <- myfunction(data = data,
                        group = "Species",
                        x = "StemDiameter",
                        y = "Height")
-```
-
-#Troubleshooting functions
-```{r}
-
 ```
