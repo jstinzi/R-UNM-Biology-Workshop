@@ -1,0 +1,11 @@
+---
+title: "Advanced_Homework"
+author: "Joseph R. Stinziano"
+date: "14/02/2020"
+output: html_document
+---
+UNDER CONSTRUCTION
+#1.
+```{r}
+
+```

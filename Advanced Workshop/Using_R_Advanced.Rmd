@@ -1,0 +1,26 @@
+---
+title: "Advanced Concepts in R"
+author: "Joseph R. Stinziano"
+date: "14/02/2020"
+output: html_document
+---
+UNDER CONSTRUCTION
+#Nested loops
+```{r}
+
+```
+
+#Function documentation using ROxygen
+```{r}
+
+```
+
+#Meta-programming
+```{r}
+
+```
+
+#Unit tests
+```{r}
+
+```
