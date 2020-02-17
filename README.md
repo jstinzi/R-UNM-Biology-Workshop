@@ -27,6 +27,8 @@ Once R is installed, go to: https://rstudio.com/products/rstudio/download/ and d
 
 {nlme} - useful set of tools for mixed effects statistical modeling
 
+{patchwork} - useful for making multipaneled figures
+
 {tidyr} - useful tools for keeping data 'tidy'
 
 Run the following command to install these packages:
