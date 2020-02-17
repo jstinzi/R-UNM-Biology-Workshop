@@ -242,4 +242,89 @@ myoutput <- myfunction(data = data,
                        group = "Species",
                        x = "StemDiameter",
                        y = "Height")
+
+#Besides loading a function into R as above, we can also load
+#functions into R from an R script file using the source()
+#function. First we will remove myfunction() from the global
+#environment, then run source()
+remove(myfunction)
+source("example_function.R")
+#See how the function appears in the global environment now?
+```
+
+
+#Fitting nonlinear functions to data
+Since many biological responses are nonlinear, we will cover how
+to fit nonlinear functions. Step 1 when fitting a nonlinear curve
+is to ask yourself - can I linearize this? If you can, do that and
+fit a linear regression - linear regressions can be fit with more
+exact values than nonlinear curves in R. Step 2 is to create your
+nonlinear function and then fit it.
+```{r}
+source("mynonlinearcurve.R")
+data <- read.csv("light_responses.csv")
+
+#First we split the data to one individual
+data_1 <- data[data$Poplar.ID == "1A",]
+
+#Next let's try the base nls() fitting function
+model_1 <- nls(A ~ mynonlinearcurve(curvature,
+                                    ksat,
+                                    Q = PARi,
+                                    qe) - Rd,
+               data = data_1)
+#Singular gradient matrix - this means your starting parameters
+#are bad. Let's specify some. Since qe = quantum efficiency (ie
+#the initial slope of the light response), we will estimate the
+#initial slope
+model_2 <- nls(A ~ mynonlinearcurve(curvature,
+                                    ksat,
+                                    Q = PARi,
+                                    qe) - Rd,
+               data = data_1,
+               start = list(curvature = 0.85,
+                            ksat = max(data_1$A),
+                            qe = coef(lm(A ~ PARi, 
+                                         data_1[data_1$PARi < 300,]))[[2]],
+                            Rd = min(data_1$A)))
+summary(model_2) #it works!
+
+#Now let's try something else:
+library(minpack.lm)
+model_3 <- nlsLM(A ~ mynonlinearcurve(curvature,
+                                    ksat,
+                                    Q = PARi,
+                                    qe) - Rd,
+               data = data_1)
+#this reached maximum number of iterations, let's change that!
+model_4 <- nlsLM(A ~ mynonlinearcurve(curvature,
+                                    ksat,
+                                    Q = PARi,
+                                    qe) - Rd,
+               data = data_1,
+               control = nls.lm.control(maxiter = 100))
+summary(model_4)
+#Gives NaNs warning, let's try specifying starting values
+model_5 <- nlsLM(A ~ mynonlinearcurve(curvature,
+                                    ksat,
+                                    Q = PARi,
+                                    qe) - Rd,
+               data = data_1,
+               start = list(curvature = 0.85,
+                            ksat = max(data_1$A),
+                            qe = coef(lm(A ~ PARi, 
+                                         data_1[data_1$PARi < 300,]))[[2]],
+                            Rd = min(data_1$A)))
+summary(model_5) #Notice how the iteration problem went away?
+
+#Okay, so what about plotting? This gets a little complicated
+ggplot(data_1, aes(x = PARi, y = A)) +
+  geom_point() +
+  geom_smooth(method = "lm",
+              formula = y ~ I(mynonlinearcurve(curvature = coef(model_5)[[1]],
+                                             ksat = coef(model_5)[[2]],
+                                             qe = coef(model_5)[[3]],
+                                             Q = x) - coef(model_5)[[4]]))
+#Notice the identity function I() - this is needed if there are
+#coefficients outside the fitted function, like Rd in this case
 ```
