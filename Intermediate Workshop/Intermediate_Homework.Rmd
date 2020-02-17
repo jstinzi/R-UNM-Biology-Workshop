@@ -47,7 +47,8 @@ What kind of QAQC plots might you use for your own data?
 #5. Make a function that generates a publication-quality,
 multi-panel figure that shows all of the QAQC plots in 4.
 This function should automatically print the plot to the
-working directory.
+working directory. HINT: try the gridExtra or patchwork
+packages
 ```{r}
 
 ```
