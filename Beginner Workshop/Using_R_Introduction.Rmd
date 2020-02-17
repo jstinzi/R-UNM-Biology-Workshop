@@ -117,6 +117,12 @@ data <- read.csv("light_responses.csv", stringsAsFactors = FALSE)
 data <- read.delim("poplar_light_tab_delim", sep = "\t", 
                    stringsAsFactors = FALSE)
 
+#If your data are in an Excel format (xls, xlsx) use:
+library(readxl)
+data <- read_excel("light_responses.xlsx")
+#In general, it is best to use .csv format for your data if you
+#have a choice between xls and csv formats
+
 ```
 
 #Rearranging data in R, subsetting, creating variables
