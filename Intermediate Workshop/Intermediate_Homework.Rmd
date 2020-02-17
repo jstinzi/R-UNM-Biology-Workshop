@@ -5,7 +5,8 @@ date: "13/02/2020"
 output: html_document
 ---
 
-#1. Create a  dataset with 30 observations each of 5 species, with three different randomly generated measured variables where the
+#1. Create a  dataset with 30 observations each of 5 species, 
+with three different randomly generated measured variables where the
 random sampling comes from a normal distribution. HINT: use ?runif
 and to find out the names for other distributions. How might you
 use a randomly-generated normal dataset in your analyses? How do
@@ -39,6 +40,14 @@ of QAQC include boxplots for each variable, ratios of variables
 (for example in most trees, we expect stem diameter to be less
 than height), etc. QAQC: quality assurance & quality control.
 What kind of QAQC plots might you use for your own data?
+```{r}
+
+```
+
+#5. Make a function that generates a publication-quality,
+multi-panel figure that shows all of the QAQC plots in 4.
+This function should automatically print the plot to the
+working directory.
 ```{r}
 
 ```
