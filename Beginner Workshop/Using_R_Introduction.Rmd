@@ -233,6 +233,25 @@ figure_3 <- ggplot(data = data_test, aes(x = PARi, y = A)) +
 
 figure_3
 
+#Now we have three separate figure panels - what if they are all
+#related and need to be in one figure? For this we can use the
+#patchwork package. Patchwork provide a set of intuitive
+#mathmatical operators for creating multipanel graphs. Below
+#are a few examples of how to arrange plots in different ways.
+library(patchwork)
+
+figure_1 + figure_2 / figure_3 + 
+  plot_annotation(tag_levels = "A")
+
+figure_1 / (figure_2 | figure_3) + 
+  plot_annotation(tag_levels = "A")
+
+figure_1 / figure_2 / figure_3 + 
+  plot_annotation(tag_levels = "1")
+
+figure_1 + figure_2 + figure_3 + 
+  plot_annotation(tag_levels = "1")
+
 #What if you're feeling lazy and want a quick check on your data?
 #Use the plot() function:
 plot(A ~ gsw, data[[1]])
