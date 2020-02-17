@@ -15,6 +15,8 @@ Installing RStudio:
 Once R is installed, go to: https://rstudio.com/products/rstudio/download/ and download the appropriate version of RStudio.
 
 ## List of R packages needed for this workshop
+{car} - useful tools for ANOVAs in R
+
 {dplyr} - useful tools for processing data
 
 {ggplot2} - useful graphics package for producing publication-quality figures
@@ -31,12 +33,14 @@ Once R is installed, go to: https://rstudio.com/products/rstudio/download/ and d
 
 {readxl} - lets you read in xls and xlsx files into R
 
+{robust} - provides some basic robust statistical tools in R
+
 {tidyr} - useful tools for keeping data 'tidy'
 
 Run the following command to install these packages:
 
-    install.packages(c("dplyr", "ggplot2", "ggplotgui", "lubridate", "minpack.lm", 
-    "nlme", "tidyr"))
+    install.packages(c("car", "dplyr", "ggplot2", "ggplotgui", "lubridate", "minpack.lm", 
+    "nlme", "patchwork", "readxl", "robust", "tidyr"))
 
 ## Resources
 Burns. The R Inferno. https://www.burns-stat.com/pages/Tutor/R_inferno.pdf
