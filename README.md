@@ -29,6 +29,8 @@ Once R is installed, go to: https://rstudio.com/products/rstudio/download/ and d
 
 {patchwork} - useful for making multipaneled figures
 
+{readxl} - lets you read in xls and xlsx files into R
+
 {tidyr} - useful tools for keeping data 'tidy'
 
 Run the following command to install these packages:
