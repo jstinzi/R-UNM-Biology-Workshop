@@ -52,3 +52,11 @@ packages
 ```{r}
 
 ```
+
+#6. Using the nonlinear curve-fitting example in the lesson,
+create a function that fits a linear model and the nonlinear
+function that returns the better-fitting function based on
+the lowest Bayesian Information Criterion (BIC).
+```{r}
+
+```
