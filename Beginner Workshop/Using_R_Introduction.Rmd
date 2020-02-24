@@ -137,7 +137,7 @@ library(tidyr)
 #dataframe wider. What is unexpected about the output data
 #frame?
 data_wide <- pivot_wider(data = data,
-                         names_from = Poplar.ID,
+                         names_from = `Poplar ID`,
                          values_from = c(A))
 
 #Subsetting data can be done using brackets, [], or the
@@ -153,7 +153,7 @@ data_4 <- subset(data, data$A > 0)
 #Next we calculate an estimate of gross photosynthesis from
 #the data. At PARi = 0, A = respiration. Therefore
 #A - respiration = gross photosynthesis.
-data_5 <- data[data$Poplar.ID == "1A" &
+data_5 <- data[data$`Poplar ID` == "1A" &
                  data$Rate == 0,]
 data_5$Agross <- data_5$A - min(data_5$A)
 ```
@@ -282,6 +282,7 @@ is the {dplyr} package.
 {dplyr} provides the pipeline, %>%, which can simplify
 code, and provides functions that aid in data summarization.
 ```{r}
+library(dplyr)
 data <- read.csv("light_responses.csv", stringsAsFactors = FALSE)
 
 #group_by selects the variables with which to group
