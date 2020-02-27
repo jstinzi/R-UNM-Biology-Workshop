@@ -15,7 +15,7 @@ types in R, since how you work with each type of object
 varies.
 
 There are different classes of variables as well, including
-doubles (integers and numeric), characters, factors, POSIX 
+doubles (integers and numeric), characters, factors, POSIX
 (useful for dates and times), etc.
 ```{r}
 #Create a vector from 1 to 10

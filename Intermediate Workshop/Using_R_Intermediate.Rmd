@@ -81,6 +81,7 @@ D, and E, respectively.
 ```{r}
 #Use the split function to split the dataframe into a
 #list of dataframes based on block
+data <- do.call("rbind", data)
 data <- split(data, data$Block)
 
 #Create a reference vector with the temperature to assign
@@ -178,8 +179,7 @@ boxplot(Height ~ Block, data_CDE)
 for(i in 1:nrow(data_CDE)){
   if(data_CDE$Block[i] == "C"){
   data_CDE$Height[i] <- data_CDE$Height[i] * 2
-  }
-  if(data_CDE$Block[i] == "D"){
+  } else {
     data_CDE$StemDiameter[i] <- data_CDE$StemDiameter[i] / 2
   }
 }
