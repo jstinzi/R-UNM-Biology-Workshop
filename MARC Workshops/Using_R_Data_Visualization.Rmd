@@ -4,7 +4,100 @@ author: "Joseph R. Stinziano"
 date: "02/03/2020"
 output: html_document
 ---
-
+#Data visualization
+R has a large repertoire of graphics options for analyzing
+data. We will focus on two: the basic plotting functions
+and the ggplot2 package of plotting function.
 ```{r}
+#Read in data
+data <- read.csv("example.csv",
+                 stringsAsFactors = FALSE)
 
+#We can take a look at a few different types of plot
+#histograms
+hist(data$meme_rate)
+#boxplots
+boxplot(meme_rate ~ species, data)
+#scatterplots
+plot(meme_rate ~ reddit_time, data)
+#barplots - note that there can only be
+#one value per group, so need summary info
+data_summary <- data %>% group_by(species) %>%
+  summarize(meme_rate_mean = mean(meme_rate),
+            meme_rate_sd = sd(meme_rate))
+barplot(meme_rate_mean ~ species, data_summary)
+
+#Base R graphics can be quite tricky to make
+#them look just right. Next we will use ggplot2
+#Load package
+library(ggplot2)
+graph1 <- ggplot(data = data, aes(x = reddit_time,
+                        y = meme_rate,
+                        colour = species)) +
+  #Add points to plot
+  geom_point(size = 2) +
+  #Add axis labels
+  labs(y = expression("Meme Production Rate (memes "~day^{-1}*")"),
+       x = expression("Daily reddit Time (hrs"~day^{-1}*")"),
+       colour = "Species") +
+  #Set limits to the x and y axes
+  scale_y_continuous(limits = c(0, 35),
+                     breaks = c(0, 5, 10, 15, 20, 25, 30, 35)) +
+  scale_x_continuous(limits = c(0, 10)) +
+  #Add clean theme
+  theme_bw()
+
+#Let's see the graph
+graph1
+
+#Creating a histogram
+graph2 <- ggplot(data = data, aes(x = reddit_time,
+                        fill = species)) +
+  #Add points to plot
+  geom_histogram(position = position_dodge(width = 2),
+                 binwidth = 2, colour = "Black") +
+  #Add axis labels
+  labs(x = expression("Daily reddit Time (hrs"~day^{-1}*")"),
+       fill = "Species") +
+  #Set limits to the x axis
+  scale_x_continuous(limits = c(0, 10)) +
+  #Add clean theme
+  theme_bw()
+
+#Let's see the graph
+graph2
+
+#Let's plot the summary data now with means and
+#standard deviations
+graph3 <- ggplot(data_summary, aes(x = species,
+                         y = meme_rate_mean)) +
+  geom_errorbar(aes(ymin = meme_rate_mean - meme_rate_sd,
+                ymax = meme_rate_mean + meme_rate_sd),
+                width = 0.1) +
+  geom_point(size = 4, shape = 21, fill = "Cyan") +
+  #Add axis labels
+  labs(y = 
+         expression("Meme Production Rate (memes "~day^{-1}*")")) +
+  theme_bw()
+
+#Let's see the graph
+graph3
+
+#Now if we want to export the graph, we can run the
+#following code:
+jpeg("graph1.jpeg", height = 5, width = 5,
+     res = 600, units = "in")
+graph1
+dev.off()
+
+#What about if we want multiple panels?
+#Load package
+library(patchwork)
+graph1 / (graph2 + graph3) +
+  plot_annotation(tag_levels = "A")
+
+#What about if we want a rough user interface?
+#Load package
+library(ggplotgui)
+ggplot_shiny(data)
 ```
