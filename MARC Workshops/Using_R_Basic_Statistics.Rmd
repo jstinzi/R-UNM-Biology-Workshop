@@ -4,7 +4,154 @@ author: "Joseph R. Stinziano"
 date: "02/03/2020"
 output: html_document
 ---
+#Basic statistics
+R is a powerful tool for running statistics, and makes
+it relatively straightforward to run analyses. Below
+we will address basic statistical tools of t tests,
+linear regression, multiple regression, ANOVAs, and
+post-hoc tests for ANOVAs.
+
+t-test assumptions
+1. Assume continuous or ordinal data
+2. Simple random sampling
+3. Data are normally distributed
+4. Large sample size
+
+Linear regression assumptions
+1. Linearity
+2. Homogeneity of variances 
+3. Independence
+4. Normality
+
+Multiple regression assumptions
+1. Linearity
+2. Homogeneity of variances
+3. Independence
+4. Normality
+5. Multicollinearity - assumes no two explanatory
+variables are highly correlated
+
+ANOVA assumptions
+1. Homogeneity of variance
+2. Independence
+3. Normality
+
 
 ```{r}
+#Read in data
+data <- read.csv("example.csv",
+                 stringsAsFactors = FALSE)
+```
 
+t-tests
+```{r}
+#Is there a difference in candy consumption based on
+#whether caffeine was consumed?
+test1 <- t.test(candy_consumption ~ treatment2, data = data,
+                paired = FALSE, alternative = "two.sided",
+                var.equal = FALSE)
+test1
+#Note t.test can be run assuming homogeneous and
+#non-homogeneous variance between groups. Specify
+#the var.equal argument accordingly. You can also
+#specify whether the data are paired, and whether
+#to do a one versus two-sided t test. Use ?t.test
+#to learn more
+#Check variance of data
+boxplot(candy_consumption ~ treatment2, data = data)
+#Looks equal
+
+#Check normality
+shapiro.test(data$candy_consumption)
+#If p > 0.05, can assume data are normally distributed
+#these data are not normal. In this case, use a wilcox
+#test
+wtest <- wilcox.test(candy_consumption ~ 
+                       treatment2, data = data,
+            paired = FALSE, alternative = "two.sided")
+wtest
+#Output gives a W test statistic and a p-value
+```
+
+Linear regression & multiple regression
+```{r}
+#Create a linear model object to test whether candy
+#consumption varies with reddit time
+model_1 <- lm(candy_consumption ~ reddit_time, data = data)
+
+#Check output
+summary(model_1)
+
+#Check assumptions
+plot(model_1)
+shapiro.test(data$candy_consumption)
+#Data are not normal
+
+#Let's use a robust test
+library(robust)
+model_2 <- lmRob(candy_consumption ~ reddit_time, data = data)
+summary(model_2)
+
+#####
+#Multiple regression
+#Create a linear model object to test whether candy
+#consumption varies with reddit time
+model_3 <- lm(candy_consumption ~ reddit_time *
+                meme_rate, data = data)
+
+#Check output
+summary(model_3)
+
+#Check assumptions
+plot(model_3)
+shapiro.test(data$candy_consumption)
+#Data are not normal
+
+#Check multicollinearity
+summary(lm(reddit_time ~ meme_rate, data))
+#No correlation, so okay!
+
+#Let's use a robust test
+model_4 <- lmRob(candy_consumption ~ reddit_time *
+                meme_rate, data = data)
+summary(model_4)
+```
+
+ANOVAs
+```{r}
+#First we are going to convert caffeine and internet
+#into factors
+data$treatment1 <- as.factor(data$treatment1)
+data$treatment2 <- as.factor(data$treatment2)
+#Two ways to do ANOVAs properly in R
+#1. Use the car package
+library(car)
+#Create ANOVA model in base R
+model_aov <- aov(data = data,
+               meme_rate ~ 
+                 treatment1 * treatment2)
+#Run Anova from car on model_aov
+model_aov_2 <- Anova(model_aov,
+               type = "III")
+model_aov_2
+
+#Can also run this from base R
+drop1(model_aov, ~., test = "F")
+
+#To run post-hoc test
+TukeyHSD(model_aov)
+
+#Check assumptions
+plot(model_aov)
+shapiro.test(data$meme_rate)
+#Normality violated
+
+#Use robust test
+model_aov_robust <- lmRob(data = data,
+               meme_rate ~ 
+                 treatment1 * treatment2)
+#Obtain output
+summary(aov(model_aov_robust))
+#Run post-hoc test
+TukeyHSD(aov(model_aov_robust))
 ```
