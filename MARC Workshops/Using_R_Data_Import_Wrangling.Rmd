@@ -1,0 +1,189 @@
+---
+title: "Using R - Data Import & Wrangling"
+author: "Joseph R. Stinziano"
+date: "02/03/2020"
+output: html_document
+---
+
+#Data Import & Wrangling
+There are many ways to import data into R, however the easiest
+is if the data are saved as a .csv file. You can save data in
+this format directly from spreadsheet programs such as Excel.
+In general, data should be in a "long format", meaning fewer
+columns and more rows. For example, instead of having a column
+for the height for each species, you would want a column for
+species name, and a column for height.
+
+R is object-oriented. In effect, this means that R uses objects
+to manipulate and create other objects within an environment.
+We can create and change new objects in R, and run calculations
+on entire vectors, dataframes, matrices, or single elements
+within vectors. We will run through examples below.
+
+The example data we will be using is randomly generated, and
+looks at how candy consumption, meme generate rate, and reddit
+time vary across different types of scientists when they are
+given caffeine and/or internet access.
+
+```{r}
+#We can read in data from a .csv file like this
+#Note there are other read functions, including
+#read.delim if your data are delimited by a
+#something other than a comma. Type in
+#?read.delim for more information
+data <- read.csv("example.csv",
+                 stringsAsFactors = FALSE)
+#Notice how the file name is in quotes, and the
+#stringsAsFactors argument is set to false. This
+#makes sure that things that are not factors are
+#not read in as such.
+
+#If the data are in the .xls or .xlsx format
+#we can use the read_excel function from the
+#package readxl
+#Load the package
+library(readxl)
+data_2 <- read_excel("example_excel.xlsx")
+#However, it is much better to have the data in
+#a .csv format because sometimes the read_excel
+#function has unexpected effects on the values
+#it reads in.
+```
+
+Summarizing data
+```{r}
+#####
+#Summarizing
+#We can take a look at data structure
+str(data)
+
+#and the first few lines
+head(data)
+
+#If we want to look at or use a single variable
+#from a dataframe, we have two ways:
+#dataframe$variable
+data$species
+
+#dataframes[, "variable"]
+data[, "species"]
+
+#We can look at a quick summary of our dataframe
+summary(data)
+
+#as well as for individual variables
+summary(data$meme_rate)
+
+#We can check the type of variable using:
+class(data$meme_rate)
+
+#We can also convert variables according to the
+#family of as. functions
+#If treatment1 and treatment2 are supposed to
+#be factors, then:
+data$treatment1 <- as.factor(data$treatment1)
+data$treatment2 <- as.factor(data$treatment2)
+
+#We can also summarize data into a new dataframe
+#using tools from the dplyr package
+#Load the package
+library(dplyr)
+
+#Below, the pipeline operator, %>%, passes
+#everything on its left side to the calculation
+#on the right side
+data_summary <- data %>%
+  group_by(species, treatment1,
+           treatment2) %>% 
+  summarize(meme_rate_mean = mean(meme_rate),
+            meme_rate_se = sd(meme_rate) /
+              sqrt(n()),
+            meme_rate_median = median(meme_rate))
+
+#If we want to summarize all the variables all
+#at once:
+data_summary <- data %>%
+  group_by(species, treatment1,
+           treatment2) %>% 
+  summarise_at(.vars = names(.)[c(5:7)],
+               .funs = c(mean = "mean",
+                         IQR = "IQR",
+                         median = "median",
+                         sd = "sd"),
+               na.rm = TRUE)
+
+#If you want to export your data to a new .csv
+#file, use:
+write.csv(data_summary, "example_summary.csv")
+```
+
+Subsetting data
+```{r}
+#####
+#Subsetting
+#We may be interested in looking at meme rates
+#only for biologists, in which case we can subset
+data[data$species == "Biologist", ]$meme_rate
+
+#If we want a summary, we can run:
+summary(data[data$species == "Biologist", ]$meme_rate)
+
+#This is starting to get complicated, so we can
+#assign the data for biologists to a new object
+data_biologist <- data[data$species == "Biologist",]
+summary(data_biologist$meme_rate)
+
+#If we wanted to subset the data only to include
+#very productive meme-producing biologists, we
+#could subsample data_biologist for meme rates
+#equal to or greater than the 3rd quartile
+#Extract value for 3rd quartile
+third_quart <- summary(data_biologist$meme_rate)[5]
+#Note the use of [] to extract the 5th element
+#of the summary. This notation can be used to
+#extract an element of any vector
+
+#Now let's subset
+data_biologist_productive <- 
+  data_biologist[data_biologist$meme_rate >= third_quart,]
+
+#We could also create a subset according to
+#more than one condition - let's say we want
+#biologists and chemists. We will use the
+#OR operator, |
+data_biol_chem <-
+  data[data$species == "Biologist" |
+         data$species == "Chemist",]
+
+#If we want chemists that eat fewer than 15
+#pieces of candy per day, we will use the AND
+#operator, &
+data_chem_low <-
+  data[data$species == "Chemist" &
+         data$candy_consumption < 15, ]
+
+#Notice how we use the OR operator when we
+#have multiple subsets from the same variable
+#but use the AND operator when subsetting
+#according to multiple variables
+```
+
+Vector calculations
+```{r}
+#####
+#Vector calculations
+#We can calculate and add new variables to our
+#dataframes. We may want to calculate the meme
+#efficiency of our biologists as meme_rate
+#divided by reddit_time
+data_biologist$meme_efficiency <-
+  data_biologist$meme_rate / data_biologist$reddit_time
+
+#We could also calculate weekly reddit time:
+data_biologist$reddit_weekly <-
+  data_biologist$reddit_time * 7
+
+#Notice how we can calculate new vectors by
+#running calculations on multiple vectors
+#at once
+```

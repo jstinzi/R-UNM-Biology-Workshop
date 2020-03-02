@@ -1,0 +1,10 @@
+---
+title: "Using R - Basic Statistics"
+author: "Joseph R. Stinziano"
+date: "02/03/2020"
+output: html_document
+---
+
+```{r}
+
+```

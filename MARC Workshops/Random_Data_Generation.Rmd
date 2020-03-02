@@ -1,0 +1,33 @@
+---
+title: "Random_Data_Generation"
+author: "Joseph R. Stinziano"
+date: "02/03/2020"
+output: html_document
+---
+The code below will randomly generate a dataset for illustrating
+different aspects of statistical analysis and data visualization
+```{r}
+set.seed(50)
+species <- c(rep("Biologist", 50),
+             rep("Chemist", 50),
+             rep("Physicist", 50),
+             rep("Geologist", 50))
+treatment1 <- c("Internet", "No Internet")
+treatment1 <- rep(treatment1, 100)
+treatment2 <- c(rep("Caffeine", 25), rep("No Caffeine", 25))
+treatment2 <- rep(treatment2, 4)
+meme_rate <- c(rnorm(n = 50, mean = 10, sd = 3),
+               rnorm(n = 50, mean = 5, sd = 2),
+               rnorm(n = 50, mean = 20, sd = 5),
+               rnorm(n = 50, mean = 15, sd = 2))
+candy_consumption <- c(runif(n = 50, min = 0, max = 20),
+                       runif(n = 50, min = 5, max = 25),
+                       runif(n = 50, min = 10, max = 30),
+                       runif(n = 50, min = 0, max = 10))
+reddit_time <- rnorm(n = 200, mean = 4, sd = 1.5)
+data <- cbind(species, treatment1,
+              treatment2, meme_rate,
+              candy_consumption, reddit_time)
+data <- data.frame(data)
+write.csv(data, "example.csv")
+```
