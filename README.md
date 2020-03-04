@@ -1,5 +1,5 @@
 # R-UNM-Biology-Workshop
-General workshop on using R for biology.
+General workshops on using R for biology. Originally designed for use in the University of New Mexico biology department.
 
 ## Setting up R and RStudio
 Installing R:
