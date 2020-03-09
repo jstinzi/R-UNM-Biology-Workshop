@@ -59,7 +59,7 @@ test1
 #to learn more
 #Check variance of data
 boxplot(candy_consumption ~ treatment2, data = data)
-#Looks equal
+#Variance looks equal
 
 #Check normality
 shapiro.test(data$candy_consumption)
@@ -84,6 +84,23 @@ summary(model_1)
 
 #Check assumptions
 plot(model_1)
+#First plot allows you to check for linearity
+#Ideally want to see NO pattern in the data
+#Second plot allows visual checking of normally
+#distributed data. Ideally all data should fall
+#along the dotted line
+#Third plot allows you to check for homogeneity
+#of variances. Ideally the data should show a
+#similar vertical spread across the x-axis.
+#Fourth plot is to look for high-leverage points
+#High-leverage points will lie outside of a 
+#dashed red line - there are none in this example.
+#If high-leverage points exist, there is a chance
+#that your conclusions are not robust. In this
+#case, run the statistical analysis with and
+#without the high leverage points. If conclusions
+#are the same, then you can draw conclusions from
+#the data.
 shapiro.test(data$candy_consumption)
 #Data are not normal
 
